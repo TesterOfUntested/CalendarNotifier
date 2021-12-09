@@ -19,8 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class CalendarQuickstart {
     private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
@@ -58,9 +59,40 @@ public class CalendarQuickstart {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
+    public List<String> getMailsForTomorrowClasses(Calendar service) throws  IOException {
+        //As we want to send mails at 8:00 in the morning to students from next day classes, we need to take emails
+        List<String> emails = new ArrayList<>();
+        Date today = new Date();
+        //This should be next day 00:00
+        DateTime startOfTheDay = new DateTime(new Date(today.getTime() + (1000 * 60 * 60 * 16)));
+        //This should be 23:59, or 00:00 of yet next day
+        DateTime finishOfTheDay = new DateTime(new Date(today.getTime() + (1000 * 60 * 60 * 40)));
+
+        Events events = service.events().list("primary")
+                .setTimeMin(startOfTheDay)
+                .setTimeMax(finishOfTheDay)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
+        List<Event> items = events.getItems();
+        if (items.isEmpty()) {
+            System.out.println("No upcoming events found.");
+        } else {
+            for (Event event : items) {
+                emails.add(event.getAttendees().get(1).getEmail());
+            }
+        }
+        return emails;
+    }
+
     public List<Event> getLastEvents(int howManyEvents, Calendar service) throws IOException {
         // List the next X events from the primary calendar.
-        DateTime now = new DateTime(System.currentTimeMillis());
+        LocalDate lt = LocalDate.now();
+        LocalDateTime startOfDay = lt.atStartOfDay();
+
+
+        DateTime now = new DateTime(new Date());
+        System.out.println(now);
         Events events = service.events().list("primary")
                 .setMaxResults(howManyEvents)
                 .setTimeMin(now)
