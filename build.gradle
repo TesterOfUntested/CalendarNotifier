@@ -14,4 +14,5 @@ dependencies {
     implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.23.0'
     implementation group: 'com.google.oauth-client', name: 'google-oauth-client-jetty', version: '1.23.0'
     implementation group: 'com.google.apis', name: 'google-api-services-calendar', version: 'v3-rev305-1.23.0'
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 }
