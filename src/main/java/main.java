@@ -14,5 +14,8 @@ public class main {
         for (String mail : email){
             System.out.println(mail);
         }
+
+        EmailUtility emailUtility = new EmailUtility();
+        emailUtility.sendMail( "sprawdzany96@gmail.com", "Test mail", "Thanks for joining us." );
     }
 }
